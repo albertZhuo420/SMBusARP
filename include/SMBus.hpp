@@ -32,9 +32,6 @@
 
 class SMBus {
   public:
-	SMBus() { };
-	~SMBus() { };
-
 	static int32_t i2c_smbus_access(int file, char read_write, uint8_t command, int size, union i2c_smbus_data *data);
 	static int32_t i2c_smbus_write_quick(int file, uint8_t value);
 	static int32_t i2c_smbus_read_byte(int file);
@@ -58,6 +55,12 @@ class SMBus {
 
 	/* Returns the number of read bytes */
 	static int32_t i2c_smbus_block_process_call(int file, uint8_t command, uint8_t length, uint8_t *values);
+
+  private:
+	SMBus()							= delete;
+	~SMBus()						= delete;
+	SMBus(const SMBus &)			= delete;
+	SMBus &operator=(const SMBus &) = delete;
 };
 
 int32_t SMBus::i2c_smbus_access(int file, char read_write, uint8_t command, int size, union i2c_smbus_data *data)
