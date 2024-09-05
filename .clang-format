@@ -1,0 +1,182 @@
+---
+#
+# clang-format Version 10.0:
+#   https://releases.llvm.org/10.0.0/tools/clang/docs/ClangFormatStyleOptions.html
+#
+# 参看链接：
+#   https://www.cnblogs.com/oloroso/p/14699855.html
+#   https://www.cnblogs.com/chasemeng/p/13173207.html
+#   https://hjk.life/posts/c-code-format/
+#
+
+#基于那个配置文件
+BasedOnStyle: LLVM
+# 语言标准
+Standard: Latest
+# 使用 Tab 缩进
+UseTab: Always
+#tab键盘的宽度
+TabWidth: 4
+# 其他格式化选项
+IndentWidth: 4  # 如果你希望 Tab 宽度为 4 个字符，可以将该选项设置为 1
+
+######################################################################
+
+# ( 后的参数对齐, 与 ( 对齐
+AlignAfterOpenBracket: Align
+#连续的赋值语句以 = 为中心对齐
+AlignConsecutiveAssignments: true
+# 连续定义变量时, 按变量对其;
+AlignConsecutiveDeclarations: true
+# 对齐define宏,不跨空行不跨注释
+AlignConsecutiveMacros: true
+# 用于在使用反斜杠换行中对齐反斜杠的选项
+AlignEscapedNewlines: Right
+# 水平对齐二元和三元表达式的操作数
+AlignOperands: true
+# 注释对齐
+AlignTrailingComments: true
+# 函数参数换行
+AllowAllArgumentsOnNextLine: false
+# c++的方法
+AllowAllConstructorInitializersOnNextLine: true
+# 函数参数换行
+AllowAllParametersOfDeclarationOnNextLine: false
+# 允许简短的代码快写在一行
+AllowShortBlocksOnASingleLine: Always
+# If true, short case labels will be contracted to a single line.
+AllowShortCaseLabelsOnASingleLine: true
+# 允许短的函数放在同一行: None, InlineOnly(定义在类中), Empty(空函数), Inline(定义在类中，空函数), All
+AllowShortFunctionsOnASingleLine: Inline
+# 是否允许短if单行 If true, if (a) return; 可以放到同一行
+AllowShortIfStatementsOnASingleLine: false
+# 允许短的循环保持在同一行: while (true) continue;
+AllowShortLoopsOnASingleLine: false
+# Lambda表达式
+AllowShortLambdasOnASingleLine: Inline
+# AlwaysBreakAfterDefinitionReturnType: 弃用了
+# 函数的返回值类型是否和函数名保持在同一行
+AlwaysBreakAfterReturnType: None
+# If true, always break before multiline string literals.
+AlwaysBreakBeforeMultilineStrings: false
+# 模板函数的配置
+AlwaysBreakTemplateDeclarations: Yes
+# 尽量将函数调用的参数放在同一行
+BinPackArguments: false
+# 尽量将函数声明的参数放在同一行
+BinPackParameters: false
+
+# 大括号的换行规则
+BreakBeforeBraces: Custom
+# 不换行的花括号样式 只有当 BreakBeforeBraces 设置为Custom时才有效
+BraceWrapping:
+  AfterCaseLabel: false # case语句左大括号不换行
+  AfterClass: false  # 不换行的class花括号
+  AfterControlStatement: false  # if、for、switch、do、whileif、for、switch、do、while
+  AfterEnum: false
+  AfterFunction: true # 函数的花括号换行
+  AfterNamespace: false  # 不换行的namespace花括号
+  AfterStruct: false
+  AfterUnion: false # union定义后面
+  AfterExternBlock: false # extern 的大括号内不缩进
+  BeforeCatch: true # try cache中cache是否换行
+  BeforeElse: true # else另起一行
+  IndentBraces: false # 这个一定要false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+  # AfterObjCDeclaration: 这个不知道干吗的
+
+# Jave代码的配置
+# BreakAfterJavaFieldAnnotations: true
+# 在除了赋值运算符（如"="、"+="、"-="等）之外的二元运算符(如 &&)的换行方式。
+BreakBeforeBinaryOperators: None
+# 当三元表达式不能放在同一行时，是否在三元操作符前方换行
+BreakBeforeTernaryOperators: true
+# 要使用的构造函数初始值设定项样式
+BreakConstructorInitializers: AfterColon
+# 要使用的继承列表样式
+BreakInheritanceList: AfterColon
+# 允许在格式化时破坏字符串文字。
+BreakStringLiterals: true
+# 每行字符的限制，0表示没有限制
+ColumnLimit: 150
+# 描述具有特殊含义的注释的正则表达式，不应将其拆分为行或以其他方式更改。参考 linux的设置
+CommentPragmas: '^ IWYU pragma:'
+# 配置namespace的大括号
+CompactNamespaces: false
+# 如果构造函数初始值设定项无法放在一行中，请将每个初始值设定项放在自己的行上。
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+# 用于构造函数初始值设定项列表和继承列表缩进的字符数
+ConstructorInitializerIndentWidth: 2
+# 换行延续的缩进宽度。
+ContinuationIndentWidth: 4
+# 使用c++11的大括号缩进方式
+Cpp11BracedListStyle: true
+# 如果为 true，clang-format 将添加缺失的命名空间结束注释并修复无效的现有注释。
+FixNamespaceComments: true
+# 头文件的配置方式
+IncludeBlocks: Preserve
+IncludeCategories:
+  - Regex: '.*'
+    Priority: 1
+IncludeIsMainRegex: '(Test)?$'
+# 对.hpp 的头文件的操作, 就是将.hpp的文件当成头文件来处理
+IncludeIsMainSourceRegex: '(Impl\.hpp)$'
+# 缩进case标签
+IndentCaseLabels: true
+# 配置 goto 标签
+IndentGotoLabels: false
+# 配置 #if 这种选择编译的缩进方式
+IndentPPDirectives: BeforeHash
+# 配置函数的名字, 过长怎么办
+IndentWrappedFunctionNames: false
+#
+# Java开头的配置这里没有配
+#
+
+# if等控制语句中开头的空行是否去掉
+KeepEmptyLinesAtTheStartOfBlocks: false
+# 连续的空行保留几行
+MaxEmptyLinesToKeep: 1
+# 命名空间中的变量函数的缩进;
+NamespaceIndentation: Inner
+
+#
+# ObjC 开头的配置不进行设置
+#
+
+#
+# Penalty 开头的配置不进行设置
+#
+
+# 将指针的 * 号紧贴变量名
+PointerAlignment: Right
+# 不确定用法, 暂不配置
+# RawStringFormats:
+# 配置comment, 不一定有效
+ReflowComments: true
+SortIncludes: true
+SortUsingDeclarations: true
+SpaceAfterCStyleCast: false
+SpaceAfterLogicalNot: false
+SpaceAfterTemplateKeyword: true
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCpp11BracedList: true
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+# SpaceBeforeParens: 感觉这个不操作为好
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceBeforeSquareBrackets: false
+SpaceInEmptyBlock: true
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 2
+SpacesInAngles: false
+SpacesInCStyleCastParentheses: false
+SpacesInConditionalStatement: false
+SpacesInContainerLiterals: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+InsertNewlineAtEOF: true
+UseCRLF: false
+######################################################################
