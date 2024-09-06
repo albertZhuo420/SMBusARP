@@ -57,6 +57,69 @@ int I2C_SMBus::set_slave_address(int fd, int saddr_7bit, bool force)
 	return 0;
 }
 
+int32_t I2C_SMBus::check_funcs(int file, XferSize size, int pec)
+{
+	unsigned long funcs;
+
+	/* check adapter functionality */
+	if (ioctl(file, I2C_FUNCS, &funcs) < 0) {
+		fprintf(stderr,
+				"Error: Could not get the adapter "
+				"functionality matrix: %s\n",
+				strerror(errno));
+		return -1;
+	}
+
+	switch (size) {
+		case XferSize::I2C_SMBUS_BYTE_SIZE:
+			if (!(funcs & I2C_FUNC_SMBUS_READ_BYTE)) {
+				fprintf(stderr, MISSING_FUNC_FMT, "SMBus receive byte");
+				return -1;
+			}
+			if (!(funcs & I2C_FUNC_SMBUS_WRITE_BYTE)) {
+				fprintf(stderr, MISSING_FUNC_FMT, "SMBus send byte");
+				return -1;
+			}
+			break;
+
+		case XferSize::I2C_SMBUS_BYTE_DATA_SIZE:
+			if (!(funcs & I2C_FUNC_SMBUS_READ_BYTE_DATA)) {
+				fprintf(stderr, MISSING_FUNC_FMT, "SMBus read byte");
+				return -1;
+			}
+			break;
+
+		case XferSize::I2C_SMBUS_WORD_DATA_SIZE:
+			if (!(funcs & I2C_FUNC_SMBUS_READ_WORD_DATA)) {
+				fprintf(stderr, MISSING_FUNC_FMT, "SMBus read word");
+				return -1;
+			}
+			break;
+
+		case XferSize::I2C_SMBUS_BLOCK_DATA_SIZE:
+			if (!(funcs & I2C_FUNC_SMBUS_READ_BLOCK_DATA)) {
+				fprintf(stderr, MISSING_FUNC_FMT, "SMBus block read");
+				return -1;
+			}
+			break;
+
+		case XferSize::I2C_SMBUS_I2C_BLOCK_DATA_SIZE:
+			if (!(funcs & I2C_FUNC_SMBUS_READ_I2C_BLOCK)) {
+				fprintf(stderr, MISSING_FUNC_FMT, "I2C block read");
+				return -1;
+			}
+			break;
+	}
+
+	if (pec && !(funcs & (I2C_FUNC_SMBUS_PEC | I2C_FUNC_I2C))) {
+		fprintf(stderr,
+				"Warning: Adapter does "
+				"not seem to support PEC\n");
+	}
+
+	return 0;
+}
+
 int32_t I2C_SMBus::i2c_smbus_access(int file, I2CRW rw, uint8_t command, XferSize size, union i2c_smbus_data *data)
 {
 	struct i2c_smbus_ioctl_data args;
