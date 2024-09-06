@@ -36,12 +36,26 @@
 
 enum class I2CRW : uint8_t { Write, Read };
 
+/* SMBus transaction types (size parameter in the above functions)
+   Note: these no longer correspond to the (arbitrary) PIIX4 internal codes! */
+enum class XferSize : uint32_t {
+	I2C_SMBUS_QUICK_SIZE			= 0,
+	I2C_SMBUS_BYTE_SIZE				= 1,
+	I2C_SMBUS_BYTE_DATA_SIZE		= 2,
+	I2C_SMBUS_WORD_DATA_SIZE		= 3,
+	I2C_SMBUS_PROC_CALL_SIZE		= 4,
+	I2C_SMBUS_BLOCK_DATA_SIZE		= 5,
+	I2C_SMBUS_I2C_BLOCK_BROKEN_SIZE = 6,
+	I2C_SMBUS_BLOCK_PROC_CALL_SIZE	= 7,
+	I2C_SMBUS_I2C_BLOCK_DATA_SIZE	= 8,
+};
+
 class SMBus {
   public:
 	static int32_t smbus_use_pec(int file);
 
-	static int32_t i2c_smbus_access(int file, I2CRW rw, uint8_t command, int size, union i2c_smbus_data *data);
-	static int32_t i2c_smbus_write_quick(int file,  I2CRW rw);
+	static int32_t i2c_smbus_access(int file, I2CRW rw, uint8_t command, XferSize size, union i2c_smbus_data *data);
+	static int32_t i2c_smbus_write_quick(int file, I2CRW rw);
 	static int32_t i2c_smbus_read_byte(int file);
 	static int32_t i2c_smbus_write_byte(int file, uint8_t value);
 	static int32_t i2c_smbus_read_byte_data(int file, uint8_t command);
