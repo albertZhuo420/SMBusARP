@@ -24,6 +24,8 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
+// #include <i2c/smbus.h>
+
 /* Compatibility defines */
 #ifndef I2C_SMBUS_I2C_BLOCK_BROKEN
 	#define I2C_SMBUS_I2C_BLOCK_BROKEN I2C_SMBUS_I2C_BLOCK_DATA
@@ -32,10 +34,14 @@
 	#define I2C_FUNC_SMBUS_PEC I2C_FUNC_SMBUS_HWPEC_CALC
 #endif
 
+enum class I2CRW : uint8_t { Write, Read };
+
 class SMBus {
   public:
-	static int32_t i2c_smbus_access(int file, char read_write, uint8_t command, int size, union i2c_smbus_data *data);
-	static int32_t i2c_smbus_write_quick(int file, uint8_t value);
+	static int32_t smbus_use_pec(int file);
+
+	static int32_t i2c_smbus_access(int file, I2CRW rw, uint8_t command, int size, union i2c_smbus_data *data);
+	static int32_t i2c_smbus_write_quick(int file,  I2CRW rw);
 	static int32_t i2c_smbus_read_byte(int file);
 	static int32_t i2c_smbus_write_byte(int file, uint8_t value);
 	static int32_t i2c_smbus_read_byte_data(int file, uint8_t command);
