@@ -11,6 +11,7 @@ int32_t I2C_SMBus::smbus_use_pec(int file)
 		fprintf(stderr, "Error: Could not set PEC: %s\n", std::strerror(errno));
 		return -1;
 	}
+
 	return 0;
 }
 
@@ -120,6 +121,24 @@ int32_t I2C_SMBus::check_funcs(int file, XferSize size, int pec)
 	return 0;
 }
 
+bool I2C_SMBus::is_support_pec(int file)
+{
+	unsigned long funcs;
+
+	/* check adapter functionality */
+	if (ioctl(file, I2C_FUNCS, &funcs) < 0) {
+		fprintf(stderr, "Error: Could not get the adapter functionality matrix: %s\n", std::strerror(errno));
+		return false;
+	}
+
+	if (!(funcs & (I2C_FUNC_SMBUS_PEC | I2C_FUNC_I2C))) {
+		fprintf(stderr, "Warning: Adapter does not seem to support PEC\n");
+		return false;
+	}
+
+	return true;
+}
+
 int32_t I2C_SMBus::i2c_smbus_access(int file, I2CRW rw, uint8_t command, XferSize size, union i2c_smbus_data *data)
 {
 	struct i2c_smbus_ioctl_data args;
@@ -226,7 +245,9 @@ int32_t I2C_SMBus::i2c_smbus_read_block_data(int file, uint8_t command, uint8_t 
 	for (i = 1; i <= data.block[0]; i++) {
 		values[i - 1] = data.block[i];
 	}
-	return data.block[0];
+	std::cout << std::hex << std::showbase << "block 0: " << static_cast<uint32_t>(data.block[0]) << "\n";
+
+	return static_cast<int32_t>(data.block[0]);
 }
 
 int32_t I2C_SMBus::i2c_smbus_write_block_data(int file, uint8_t command, uint8_t length, const uint8_t *values)

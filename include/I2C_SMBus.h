@@ -23,7 +23,7 @@
 
 // #include <i2c/smbus.h>
 
-#define MISSING_FUNC_FMT	"Error: Adapter does not have %s capability\n"
+#define MISSING_FUNC_FMT "Error: Adapter does not have %s capability\n"
 
 /* Compatibility defines */
 #ifndef I2C_SMBUS_I2C_BLOCK_BROKEN
@@ -55,6 +55,7 @@ class I2C_SMBus {
 	static int32_t open_i2c_dev(int i2cbus);
 	static int32_t set_slave_address(int fd, int saddr_7bit, bool force = false);
 	static int32_t check_funcs(int file, XferSize size, int pec);
+	static bool	   is_support_pec(int file);
 
 	static int32_t i2c_smbus_access(int file, I2CRW rw, uint8_t command, XferSize size, union i2c_smbus_data *data);
 	static int32_t i2c_smbus_write_quick(int file, I2CRW rw);
