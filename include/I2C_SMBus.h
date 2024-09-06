@@ -18,11 +18,8 @@
 #include <linux/i2c-dev.h>
 #include <linux/i2c.h>
 #include <linux/types.h>
-#include <stddef.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <sys/ioctl.h>
-#include <unistd.h>
 
 // #include <i2c/smbus.h>
 
@@ -39,20 +36,22 @@ enum class I2CRW : uint8_t { Write, Read };
 /* SMBus transaction types (size parameter in the above functions)
    Note: these no longer correspond to the (arbitrary) PIIX4 internal codes! */
 enum class XferSize : uint32_t {
-	I2C_SMBUS_QUICK_SIZE			= 0,
-	I2C_SMBUS_BYTE_SIZE				= 1,
-	I2C_SMBUS_BYTE_DATA_SIZE		= 2,
-	I2C_SMBUS_WORD_DATA_SIZE		= 3,
-	I2C_SMBUS_PROC_CALL_SIZE		= 4,
-	I2C_SMBUS_BLOCK_DATA_SIZE		= 5,
-	I2C_SMBUS_I2C_BLOCK_BROKEN_SIZE = 6,
-	I2C_SMBUS_BLOCK_PROC_CALL_SIZE	= 7,
-	I2C_SMBUS_I2C_BLOCK_DATA_SIZE	= 8,
+	I2C_SMBUS_QUICK_SIZE			= I2C_SMBUS_QUICK,
+	I2C_SMBUS_BYTE_SIZE				= I2C_SMBUS_BYTE,
+	I2C_SMBUS_BYTE_DATA_SIZE		= I2C_SMBUS_BYTE_DATA,
+	I2C_SMBUS_WORD_DATA_SIZE		= I2C_SMBUS_WORD_DATA,
+	I2C_SMBUS_PROC_CALL_SIZE		= I2C_SMBUS_PROC_CALL,
+	I2C_SMBUS_BLOCK_DATA_SIZE		= I2C_SMBUS_BLOCK_DATA,
+	I2C_SMBUS_I2C_BLOCK_BROKEN_SIZE = I2C_SMBUS_I2C_BLOCK_BROKEN,
+	I2C_SMBUS_BLOCK_PROC_CALL_SIZE	= I2C_SMBUS_BLOCK_PROC_CALL,
+	I2C_SMBUS_I2C_BLOCK_DATA_SIZE	= I2C_SMBUS_I2C_BLOCK_DATA,
 };
 
-class SMBus {
+class I2C_SMBus {
   public:
 	static int32_t smbus_use_pec(int file);
+	static int32_t open_i2c_dev(int i2cbus);
+	static int32_t set_slave_address(int fd, int saddr_7bit, bool force = false);
 
 	static int32_t i2c_smbus_access(int file, I2CRW rw, uint8_t command, XferSize size, union i2c_smbus_data *data);
 	static int32_t i2c_smbus_write_quick(int file, I2CRW rw);
@@ -79,8 +78,8 @@ class SMBus {
 	static int32_t i2c_smbus_block_process_call(int file, uint8_t command, uint8_t length, uint8_t *values);
 
   private:
-	SMBus()							= delete;
-	~SMBus()						= delete;
-	SMBus(const SMBus &)			= delete;
-	SMBus &operator=(const SMBus &) = delete;
+	I2C_SMBus()								= delete;
+	~I2C_SMBus()							= delete;
+	I2C_SMBus(const I2C_SMBus &)			= delete;
+	I2C_SMBus &operator=(const I2C_SMBus &) = delete;
 };

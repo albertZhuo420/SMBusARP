@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
 add_executable(${PROJECT_NAME} 
-	${PROJECT_SOURCE_DIR}/src/SMBusARP.cpp
-	${PROJECT_SOURCE_DIR}/src/SMBus.cpp
+	${PROJECT_SOURCE_DIR}/src/SMBus_ARP.cpp
+	${PROJECT_SOURCE_DIR}/src/I2C_SMBus.cpp
 	${PROJECT_SOURCE_DIR}/src/main.cpp
 )

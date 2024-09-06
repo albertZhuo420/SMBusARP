@@ -1,16 +1,16 @@
 #pragma once
 
-#include "SMBus.h"
+#include "I2C_SMBus.h"
 
 enum class ARPCmdType {
 	General,
 	Directed
 };
 
-class SMBusARP {
+class SMBus_ARP {
   public:
-	SMBusARP();
-	~SMBusARP();
+	SMBus_ARP();
+	~SMBus_ARP();
 
 	int prepareToARP();
 	int resetDevice();
