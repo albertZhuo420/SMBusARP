@@ -12,6 +12,8 @@ enum SMBusARPCmd : uint8_t {
 	Prepare_to_ARP = 0x1,
 	Reset_Device   = 0x2,
 	Get_UUID	   = 0x3,
+	Assign_Address = 0x4,
+	Reserved	   = 0x5,
 };
 
 struct SMBusUUID {
@@ -54,7 +56,7 @@ class SMBus_ARP {
 	int reset_device(void);
 	int get_UUID(std::vector<uint8_t> &uuid_val, uint8_t &slave_addr_7bit);
 	int get_UUID(uint8_t target_addr_7bit, std::vector<uint8_t> &uuid_vec, uint8_t &slave_addr_7bit);
-	int assign_address();
+	int assign_address(const std::vector<uint8_t> &data);
 
 	int resetDeviceARP();
 	int notifyARPMaster();

@@ -58,7 +58,28 @@ int main(void)
 	std::cout << std::hex << std::showbase << "Device Capabilities: " << static_cast<uint32_t>(uuid.vender_spec_id) << "\n";
 	std::cout << std::hex << std::showbase << "Device Capabilities: " << static_cast<uint32_t>(slave_dev_addr_7bit) << "\n";
 
-	
+	uint8_t assgn_addr_7bit = 0x64;
+	uuid_vec.push_back(assgn_addr_7bit << 1);
+
+	if (arp.assign_address(uuid_vec)) {
+		Debug_Line();
+		std::exit(1);
+	}
+
+	// 验证是否分配成功
+	std::vector<uint8_t> uuid_assign;
+	if (arp.get_UUID(assgn_addr_7bit, uuid_assign, slave_dev_addr_7bit)) {
+		Debug_Line();
+		std::exit(1);
+	}
+
+	if (assgn_addr_7bit == slave_dev_addr_7bit) {
+		std::cout << "Assign Address Success.\n";
+	}
+	else {
+		std::cout << std::hex << std::showbase << "Assign Address failed, expect Addr(7 bit) is " << static_cast<uint32_t>(assgn_addr_7bit)
+				  << ", but the received Addr(7 bit) is " << static_cast<uint32_t>(slave_dev_addr_7bit) << "\n";
+	}
 
 	return 0;
 }
