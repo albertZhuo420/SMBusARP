@@ -245,7 +245,7 @@ int32_t I2C_SMBus::i2c_smbus_read_block_data(int file, uint8_t command, uint8_t 
 	for (i = 1; i <= data.block[0]; i++) {
 		values[i - 1] = data.block[i];
 	}
-	std::cout << std::hex << std::showbase << "block 0: " << static_cast<uint32_t>(data.block[0]) << "\n";
+	// std::cout << std::hex << std::showbase << "block 0: " << static_cast<uint32_t>(data.block[0]) << "\n";
 
 	return static_cast<int32_t>(data.block[0]);
 }

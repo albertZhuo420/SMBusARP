@@ -1,8 +1,10 @@
-#include <iostream>
 #include <chrono>
+#include <cstring>
+#include <iostream>
 #include <thread>
 
 #include "SMBus_ARP.h"
+#include "Utils.hpp"
 
 #define Debug_Line()                                                                                                                                 \
 	do {                                                                                                                                             \
@@ -11,6 +13,13 @@
 
 int main(void)
 {
+	if (Utils::is_little_endian()) {
+		std::cout << "| ===== Little Endian ===== |\n";
+	}
+	else {
+		std::cout << "| ===== Big Endian ===== |\n";
+	}
+
 	SMBus_ARP arp;
 
 	if (arp.init_smbus_arp(0)) {
@@ -28,12 +37,13 @@ int main(void)
 		std::exit(1);
 	}
 
-	Debug_Line();
-	std::vector<uint8_t> uuid_vec;
-
 	std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	Debug_Line();
 
-	if (arp.get_UUID(uuid_vec)) {
+	std::vector<uint8_t> uuid_vec;
+	uint8_t				 slave_dev_addr_7bit = 0;
+
+	if (arp.get_UUID(uuid_vec, slave_dev_addr_7bit)) {
 		Debug_Line();
 		std::exit(1);
 	}
@@ -43,34 +53,12 @@ int main(void)
 	}
 	std::cout << "\n";
 
+	SMBusUUID uuid = Utils::read_smbus_uuid(uuid_vec.data());
+	std::cout << std::hex << std::showbase << "Device Capabilities: " << static_cast<uint32_t>(uuid.dev_cap) << "\n";
+	std::cout << std::hex << std::showbase << "Device Capabilities: " << static_cast<uint32_t>(uuid.vender_spec_id) << "\n";
+	std::cout << std::hex << std::showbase << "Device Capabilities: " << static_cast<uint32_t>(slave_dev_addr_7bit) << "\n";
+
+	
+
 	return 0;
 }
-
-/**
- *
- *
- * [root@stm32mp1]:~$ i2cdetect -y 3
- *      0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
- * 00:                         -- -- -- -- -- -- -- --
- * 10: UU -- -- -- -- -- -- -- -- -- -- 1b -- 1d -- --
- * 20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
- * 30: -- -- -- -- -- -- 36 -- -- -- -- -- -- -- -- --
- * 40: -- -- -- -- -- -- -- -- -- -- UU -- -- -- -- --
- * 50: -- UU -- 53 -- -- -- -- -- -- -- -- -- -- -- --
- * 60: -- 61 -- -- -- -- -- -- -- -- 6a -- -- -- -- --
- * 70: -- -- -- -- -- -- -- --
- *
- * [root@stm32mp1]:~$ i2cdetect -y 3
- *      0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
- * 00:                         -- -- -- -- -- -- -- --
- * 10: UU -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
- * 20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
- * 30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
- * 40: -- -- -- -- -- -- -- -- -- -- UU -- -- -- -- --
- * 50: -- UU -- -- -- -- -- -- -- -- -- -- -- -- -- --
- * 60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
- * 70: -- -- -- -- -- -- -- --
- *
- * [root@stm32mp1]:~$
- *
- */

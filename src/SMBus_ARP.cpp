@@ -85,14 +85,14 @@ int SMBus_ARP::reset_device(void)
 	return 0;
 }
 
-int SMBus_ARP::get_UUID(std::vector<uint8_t> &uuid_vec)
+int SMBus_ARP::get_UUID(std::vector<uint8_t> &uuid_vec, uint8_t &slave_addr_7bit)
 {
 	if (SMBus_ARP_ADDR_7Bit != this->current_slave_addr) {
 		std::cerr << std::hex << std::showbase << "[Error] << The Current Slave Address is invalid | " << this->current_slave_addr << "\n";
 		return -1;
 	}
 
-	uint8_t uuid_arr[SMBus_DEV_UUID_SIZE + SMBus_PEC_SIZE] {0};
+	uint8_t uuid_arr[SMBus_DEV_UUID_SIZE + 1] {0};
 
 	int ret = I2C_SMBus::i2c_smbus_read_block_data(this->fd, static_cast<uint8_t>(SMBusARPCmd::Get_UUID), uuid_arr);
 
@@ -101,18 +101,20 @@ int SMBus_ARP::get_UUID(std::vector<uint8_t> &uuid_vec)
 		return ret;
 	}
 
-	if (ret != (SMBus_DEV_UUID_SIZE + SMBus_PEC_SIZE)) {
+	if (ret != (SMBus_DEV_UUID_SIZE + 1)) {
 		std::cout << std::hex << std::showbase << "[Warning] The return UUID data size is " << ret << "\n";
 	}
 
-	for (int i = 0; i < ret; i++) {
+	for (int i = 0; i < ret - 1; i++) {
 		uuid_vec.push_back(uuid_arr[i]);
 	}
+
+	slave_addr_7bit = uuid_arr[SMBus_DEV_UUID_SIZE];
 
 	return 0;
 }
 
-int SMBus_ARP::get_UUID(uint8_t target_addr_7bit, std::vector<uint8_t> &uuid_vec)
+int SMBus_ARP::get_UUID(uint8_t target_addr_7bit, std::vector<uint8_t> &uuid_vec, uint8_t &slave_addr_7bit)
 {
 	if (SMBus_ARP_ADDR_7Bit != this->current_slave_addr) {
 		std::cerr << std::hex << std::showbase << "[Error] << The Current Slave Address is invalid | " << this->current_slave_addr << "\n";
@@ -121,7 +123,7 @@ int SMBus_ARP::get_UUID(uint8_t target_addr_7bit, std::vector<uint8_t> &uuid_vec
 
 	// this->set_slave_address(SMBus_ARP_ADDR_7Bit);
 
-	uint8_t uuid_arr[SMBus_DEV_UUID_SIZE + SMBus_PEC_SIZE] {0};
+	uint8_t uuid_arr[SMBus_DEV_UUID_SIZE + 1] {0};
 
 	int ret = I2C_SMBus::i2c_smbus_read_block_data(this->fd, ((target_addr_7bit << 1) | 0x1), uuid_arr);
 
@@ -130,19 +132,22 @@ int SMBus_ARP::get_UUID(uint8_t target_addr_7bit, std::vector<uint8_t> &uuid_vec
 		return ret;
 	}
 
-	if (ret != (SMBus_DEV_UUID_SIZE + SMBus_PEC_SIZE)) {
+	if (ret != (SMBus_DEV_UUID_SIZE + 1)) {
 		std::cout << std::hex << std::showbase << "[Warning] The return UUID data size is " << ret << "\n";
 	}
 
-	for (int i = 0; i < ret; i++) {
+	for (int i = 0; i < ret - 1; i++) {
 		uuid_vec.push_back(uuid_arr[i]);
 	}
+
+	slave_addr_7bit = uuid_arr[SMBus_DEV_UUID_SIZE];
 
 	return 0;
 }
 
-int SMBus_ARP::assignAddress()
+int SMBus_ARP::assign_address()
 {
+	
 	return 0;
 }
 
@@ -158,5 +163,8 @@ int SMBus_ARP::notifyARPMaster()
 
 void SMBus_ARP::init_used_addr_pool(int pool_size)
 {
+	/**
+	 * @TODO
+	 */
 	return;
 }
